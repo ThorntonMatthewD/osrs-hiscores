@@ -1,9 +1,4 @@
 # OSRS Hiscores API Library
-![maintained](https://img.shields.io/maintenance/no/2019?style=for-the-badge)<br>
-![platform & version support](https://img.shields.io/pypi/pyversions/OSRS-Hiscores?style=for-the-badge)<br><br>
-![version](https://img.shields.io/pypi/v/OSRS-Hiscores?style=for-the-badge)<br>
-![downloads](https://img.shields.io/pypi/dm/OSRS-Hiscores?style=for-the-badge)<br>
-![size](https://img.shields.io/github/languages/code-size/coffee-fueled-deadlines/osrs-hiscores?style=for-the-badge)<br>
 
 ## STATUS
 This Package is no longer supported and instead has been implemented into [OSRSBytes](https://github.com/Coffee-fueled-deadlines/OSRSBytes)
@@ -16,22 +11,24 @@ This Package is no longer supported and instead has been implemented into [OSRSB
 
 #### Installation
 ```
-python -m pip install OSRS-Hiscores
+pip install git+https://github.com/ThorntonMatthewD/osrs-hiscores.git@master
 ```
 #### Upgrade
 ```
-python -m pip install OSRS-Hiscores --upgrade
+python -m pip install git+https://github.com/ThorntonMatthewD/osrs-hiscores.git@master --upgrade
 ```
 ***
 
-## New Features (v0.5)
+## New Features (v0.6?)
 
-upgrade OSRS-Hiscores with:
-```
-python -m pip install OSRS-Hiscores --upgrade
-```
 
 Newest features include:
+
+* You can enter usernames with spaces now and it won't break (wow)
+* Boss KC, Torunament Points and Minigame Completions (as well as accompanying rankings) are available at your leisure!
+
+-Matt
+
 ```python
 from OSRS_Hiscores import Hiscores
 
@@ -48,6 +45,10 @@ print("Total XP to Next Level:", user.skill('attack','next_level_exp'))
 
 # What if we want the Experience remaining until next level?  We can do that too!
 print("XP Remaining:", user.skill('attack','exp_to_next_level'))
+
+#Want to see your Vorkath KC? Your ranking perhaps? It's ez pz!
+print(f"Vorkath KC: {user.boss('vorkath', 'killcount')} | Vorkath Rank: {user.boss('vorkath', 'rank')} )
+
 ```
 
 ## Example Usage
