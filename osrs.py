@@ -6,6 +6,15 @@ from sys import exit
 
 __status__ = "Closed (Unsupported)"
 
+class Error(Exception):
+	pass
+
+class InvalidSTypeError(Error):
+	pass
+
+class InvalidPlayerType(Error):
+	pass
+
 class Hiscores(object):
 	"""Hiscores class
 	
@@ -33,7 +42,7 @@ class Hiscores(object):
 		print(account.stats['attack']['level']) # displays attack level
 	"""
 	def __init__(self, username: str, actype='N'):
-		self.username = username
+		self.username = username.replace(" ", "_")
 		self.accountType = actype.upper()
 		self.getHTTPResponse()
 
@@ -56,26 +65,31 @@ class Hiscores(object):
 						successfully or not.
 		"""
 		conn = http.client.HTTPSConnection('secure.runescape.com')
+
+		print(self.username)
+
 		if self.accountType == 'N':
-			conn.request("GET", "/m=hiscore_oldschool/index_lite.ws?player={}".format(self.username))
+			conn.request("GET", f"/m=hiscore_oldschool/index_lite.ws?player={self.username}")
 			self.response = conn.getresponse()
 			self.status = self.response.status
 		elif self.accountType == 'IM':
-			conn.request("GET", "/m=hiscore_oldschool_ironman/index_lite.ws?player={}".format(self.username))
+			conn.request("GET", f"/m=hiscore_oldschool_ironman/index_lite.ws?player={self.username}")
 			self.response = conn.getresponse()
 			self.status = self.response.status
 		elif self.accountType == "UIM":
-			conn.request("GET", "/m=hiscore_oldschool_ultimate/index_lite.ws?player={}".format(self.username))
+			conn.request("GET", f"/m=hiscore_oldschool_ultimate/index_lite.ws?player={self.username}")
 			self.response = conn.getresponse()
 			self.status = self.response.status
 		elif self.accountType == "HIM":
-			conn.request("GET", "/m=hiscore_oldschool_hardcore_ironman/index_lite.ws?player={}".format(self.username))
+			conn.request("GET", f"/m=hiscore_oldschool_hardcore_ironman/index_lite.ws?player={self.username}")
 			self.response = conn.getresponse()
 			self.status = self.response.status
 		elif self.accountType == "S":
-			conn.request("GET", "/m=hiscore_oldschool_seasonal/index_lite.ws?player={}".format(self.username))
+			conn.request("GET", f"/m=hiscore_oldschool_seasonal/index_lite.ws?player={self.username}")
 			self.response = conn.getresponse()
 			self.status = self.response.status
+		else:
+			self.status = 999
 		self.processResponse()
 
 	def processResponse(self):
@@ -99,8 +113,10 @@ class Hiscores(object):
 			self.parseData(): This method is called when self.status is 200 (success)
 		"""
 		if self.status != 200:
-			self.errorMsg = "Player name given not found in account type provided.  Valid account types are, 'N' (Normal), 'IM' (Iron Man), 'UIM' (Ultimate Iron Man), 'HIC' (Hardcore Iron Man)"
-			self.error()
+			if self.status == 999:
+				raise InvalidPlayerType("Valid account types are, 'N' (Normal), 'IM' (Iron Man), 'UIM' (Ultimate Iron Man), 'HIC' (Hardcore Iron Man)")
+			else:
+				raise http.client.HTTPException(f"Status Code: {self.status}", f"Player name given might not be able to be found with account type provided (current selection: {self.accountType}), or hiscores are unreachable.")
 		else:
 			self.data = self.response.read().decode('ascii')
 			self.parseData()
@@ -122,40 +138,107 @@ class Hiscores(object):
 		"""
 		self.data = self.data.replace('\n',',')
 		self.data = self.data.split(',')
-		subset = {}
+
+		skills_subset = {}
+		bosses_subset = {}
 
 		# Totals
 		info = {}
 		info['rank']       = self.data[0]
 		info['level']      = self.data[1]
 		info['experience'] = self.data[2]
-		subset['total']    = info
+		skills_subset['total']    = info
 
 		skills = [
-			  'attack',
-		          'defense',
-		          'strength',
-		          'hitpoints',
-		          'ranged',
-		          'prayer',
-		          'magic',
-		          'cooking',
-		          'woodcutting',
-		          'fletching',
-		          'fishing',
-		          'firemaking',
-		          'crafting',
-		          'smithing',
-		          'mining',
-		          'herblore',
-		          'agility',
-		          'thieving',
-		          'slayer',
-		          'farming',
-		          'runecrafting',
-		          'hunter',
-		          'construction'
-		           ]
+					'attack',
+					'defense',
+					'strength',
+					'hitpoints',
+					'ranged',
+					'prayer',
+					'magic',
+					'cooking',
+					'woodcutting',
+					'fletching',
+					'fishing',
+					'firemaking',
+					'crafting',
+					'smithing',
+					'mining',
+					'herblore',
+					'agility',
+					'thieving',
+					'slayer',
+					'farming',
+					'runecrafting',
+					'hunter',
+					'construction'
+		]
+
+		#also includes minigames and tournament points
+		bosses = [
+					'league',
+					'bounty_hunter_hunter',
+					'bounty_hunter_rogue',
+					'cs_all',
+					'cs_beginner',
+					'cs_easy',
+					'cs_medium',
+					'cs_hard',
+					'cs_elite',
+					'cs_master',
+					'lms_rank',
+					'soul_wars_zeal',
+					'abyssal_sire',
+					'alchemical_hydra',
+					'barrows_chests',
+					'bryophyta',
+					'callisto',
+					'cerberus',
+					'chambers_of_xeric',
+					'chambers_of_xeric_challenge_mode',
+					'chaos_elemental',
+					'chaos_fanatic',
+					'commander_zilyana',
+					'corporeal_beast',
+					'crazy_archaeologist',
+					'dagannoth_prime',
+					'dagannoth_rex',
+					'dagannoth_supreme',
+					'deranged_archaeologist',
+					'general_graardor',
+					'giant_mole',
+					'grotesque_guardians',
+					'hespori',
+					'kalphite_queen',
+					'king_black_dragon',
+					'kraken',
+					'kreearra',
+					'kril_tsutsaroth',
+					'mimic',
+					'nightmare',
+					'Phosanis_nightmare',
+					'obor',
+					'sarachnis',
+					'scorpia',
+					'skotizo',
+					'tempoross',
+					'the_gauntlet',
+					'the_corrupted_gauntlet',
+					'theatre_of_blood',
+					'theatre_of_blood_hard',
+					'thermonuclear_smoke_devil',
+					'tzkal_zuk',
+					'tztok_jad',
+					'venenatis',
+					'vetion',
+					'vorkath',
+					'wintertodt',
+					'zalcano',
+					'zulrah'
+		]
+
+
 		counter = 0
 		for i in range(len(skills)):
 			info = {}
@@ -165,17 +248,25 @@ class Hiscores(object):
 			level = int(info['level']+1)
 			info['next_level_exp'] = math.floor(sum((math.floor(level + 300 * (2 ** (level / 7.0))) for level in range(1, level)))/4)
 			info['exp_to_next_level'] = int(info['next_level_exp'] - info['experience'])
-			subset[skills[i]] = info
+			skills_subset[skills[i]] = info
 			counter += 3
 
-		# set stats dictionary
-		self.stats = subset
+		for i in range(len(bosses)):
+			info = {}
+			info['rank']		= int(self.data[counter+3])
+			info['killcount']	= int(self.data[counter+4])
+			bosses_subset[bosses[i]] = info
+			counter += 2
 
-	def skill(self, skill, stype: str = 'level'):
+		# set stats and bosses dicts
+		self.stats = skills_subset
+		self.bosses = bosses_subset
+
+	def skill(self, skill: str, stype: str = 'level'):
 		"""skill() method
 		
 		The skill() method is a more dynamic, intuitive way to access stats
-		then the self.stats dictionary variable.  It allows for a user to
+		than the self.stats dictionary variable.  It allows for a user to
 		provide the skill and stype (level, rank, experience) of the skill
 		they wish information on.
 		
@@ -192,13 +283,41 @@ class Hiscores(object):
 		"""
 		try:
 			if stype.lower() not in ['rank','level','experience','exp_to_next_level']:
-				raise "stype must be 'rank','level', or experience'"
+				raise InvalidSTypeError("stype must be 'rank','level', 'experience' or 'exp_to_next_level'")
 				exit(0)
 			else:
 				return self.stats[skill.lower()][stype.lower()]
 		except KeyError as KE:
 			print("ERROR: skill {} does not exist".format(KE))
 			exit(0)
+
+
+	def boss(self, boss: str, stype: str = 'killcount'):
+		"""boss() method
+		
+		Allows users to directly access an individual boss/minigame/tournament's
+		information for a given RSN.
+		
+		Args:
+			boss (str): The OSRS boss/minigame/tournament name 
+			
+			stype (str): One of 'killcount' or 'rank'
+			             to receive information for.  If not
+				     supplied, stype is assumed to be
+				     'killcount'
+		Returns:
+			self.bosses[boss][stype] (int): The info you requested
+		"""
+		try:
+			if stype.lower() not in ['killcount', 'rank']:
+				raise InvalidSTypeError("stype must be 'killcount' or 'rank'")
+				exit(0)
+			else:
+				return self.bosses[boss.lower()][stype.lower()]
+		except KeyError as KE:
+			print("ERROR: boss {} does not exist".format(KE))
+			exit(0)
+
 
 	def error(self):
 		print("Error occurred: {}".format(self.errorMsg))
