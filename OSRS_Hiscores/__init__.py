@@ -284,12 +284,12 @@ class Hiscores(object):
 		try:
 			if stype.lower() not in ['rank','level','experience','exp_to_next_level']:
 				raise InvalidSTypeError("stype must be 'rank','level', 'experience' or 'exp_to_next_level'")
-				exit(0)
+				return
 			else:
 				return self.stats[skill.lower()][stype.lower()]
 		except KeyError as KE:
 			print("ERROR: skill {} does not exist".format(KE))
-			exit(0)
+			return
 
 
 	def boss(self, boss: str, stype: str = 'killcount'):
@@ -311,14 +311,14 @@ class Hiscores(object):
 		try:
 			if stype.lower() not in ['killcount', 'rank']:
 				raise InvalidSTypeError("stype must be 'killcount' or 'rank'")
-				exit(0)
+				return
 			else:
 				return self.bosses[boss.lower()][stype.lower()]
 		except KeyError as KE:
 			print("ERROR: boss {} does not exist".format(KE))
-			exit(0)
+			return
 
 
 	def error(self):
 		print("Error occurred: {}".format(self.errorMsg))
-		exit(0)
+		return
