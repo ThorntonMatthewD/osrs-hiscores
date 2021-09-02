@@ -66,8 +66,6 @@ class Hiscores(object):
 		"""
 		conn = http.client.HTTPSConnection('secure.runescape.com')
 
-		print(self.username)
-
 		if self.accountType == 'N':
 			conn.request("GET", f"/m=hiscore_oldschool/index_lite.ws?player={self.username}")
 			self.response = conn.getresponse()
