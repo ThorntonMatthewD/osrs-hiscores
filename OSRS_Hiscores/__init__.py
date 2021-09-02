@@ -217,7 +217,7 @@ class Hiscores(object):
 					'kril_tsutsaroth',
 					'mimic',
 					'nightmare',
-					'Phosanis_nightmare',
+					'phosanis_nightmare',
 					'obor',
 					'sarachnis',
 					'scorpia',
