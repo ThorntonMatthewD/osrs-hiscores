@@ -313,8 +313,3 @@ class Hiscores(object):
 		except KeyError as KE:
 			print(f"ERROR: boss {KE} does not exist")
 			raise KeyError()
-
-
-	def error(self):
-		print("Error occurred: {}".format(self.errorMsg))
-		return
