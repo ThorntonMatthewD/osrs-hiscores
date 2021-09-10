@@ -134,7 +134,7 @@ class Hiscores(object):
 		Triggers:
 			None
 		"""
-		self.data = self.data.replace('\n',',')
+		self.data = str(self.data).replace('\n',',')
 		self.data = self.data.split(',')
 
 		skills_subset = {}
