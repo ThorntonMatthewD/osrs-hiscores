@@ -260,7 +260,7 @@ class Hiscores(object):
 		self.stats = skills_subset
 		self.bosses = bosses_subset
 
-	def skill(self, skill: str, stype: str = 'level'):
+	def skill(self, skill: str, stype: str = 'level') -> str:
 		"""skill() method
 		
 		The skill() method is a more dynamic, intuitive way to access stats
@@ -282,15 +282,14 @@ class Hiscores(object):
 		try:
 			if stype.lower() not in ['rank','level','experience','exp_to_next_level']:
 				raise InvalidSTypeError("stype must be 'rank','level', 'experience' or 'exp_to_next_level'")
-				return
 			else:
 				return self.stats[skill.lower()][stype.lower()]
 		except KeyError as KE:
-			print("ERROR: skill {} does not exist".format(KE))
-			return
+			print(f"ERROR: skill {KE} does not exist")
+			raise KeyError()
 
 
-	def boss(self, boss: str, stype: str = 'killcount'):
+	def boss(self, boss: str, stype: str = 'killcount') -> str:
 		"""boss() method
 		
 		Allows users to directly access an individual boss/minigame/tournament's
@@ -309,12 +308,11 @@ class Hiscores(object):
 		try:
 			if stype.lower() not in ['killcount', 'rank']:
 				raise InvalidSTypeError("stype must be 'killcount' or 'rank'")
-				return
 			else:
 				return self.bosses[boss.lower()][stype.lower()]
 		except KeyError as KE:
-			print("ERROR: boss {} does not exist".format(KE))
-			return
+			print(f"ERROR: boss {KE} does not exist")
+			raise KeyError()
 
 
 	def error(self):
