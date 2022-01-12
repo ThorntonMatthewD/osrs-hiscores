@@ -219,8 +219,8 @@ class Hiscores(object):
 					'phosanis_nightmare',
 					'obor',
 					'sarachnis',
-					'skotizo',
 					'scorpia',
+					'skotizo',
 					'tempoross',
 					'the_gauntlet',
 					'the_corrupted_gauntlet',
@@ -254,7 +254,6 @@ class Hiscores(object):
 			info = {}
 			info['rank']		= int(self.data[counter+3])
 			info['killcount']	= int(self.data[counter+4])
-
 			bosses_subset[bosses[i]] = info
 			counter += 2
 
