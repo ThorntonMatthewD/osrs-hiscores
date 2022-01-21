@@ -27,7 +27,7 @@ python -m pip install git+https://github.com/ThorntonMatthewD/osrs-hiscores.git@
 Newest features include:
 
 * You can enter usernames with spaces now and it won't break (wow)
-* Boss KC, Torunament Points and Minigame Completions (as well as accompanying rankings) are available at your leisure!
+* Boss KC, Tournament Points and Minigame Completions (as well as accompanying rankings) are available at your leisure!
 
 -Matt
 
